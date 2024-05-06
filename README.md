@@ -1,1 +1,1 @@
-# zaverecny-projekt-IT4
+# Maturitní projekt IT4
