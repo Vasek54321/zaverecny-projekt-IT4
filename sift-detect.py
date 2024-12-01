@@ -41,7 +41,7 @@ def detect_objects(frame, net, output_layers, confidence_threshold=0.5):
 
 def calculate_speed_for_car(video_path, real_world_scale, fps):
     # Načtení YOLO modelu
-    net = cv2.dnn.readNetFromDarknet("yolov4.cfg", "yolov4.weights")
+    net = cv2.dnn.readNet("yolov4.cfg", "yolov4.weights")
     with open("coco.names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
     layer_names = net.getLayerNames()
