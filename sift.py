@@ -1,8 +1,8 @@
-# Important NOTE:  Use opencv >=4.4 
+
 import cv2
  
 # Loading the image
-img = cv2.imread('geeks.jpg')
+img = cv2.imread('test.png')
  
  # Converting image to grayscale
 gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)

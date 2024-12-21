@@ -1,2 +1,15 @@
 .venv
 yolov4.weights
+yolov4.cfg
+.idea
+32-mercedes-benz-gls-580-2020
+coco.names
+geeks.jpg
+image-with-keypoints.jpg
+output_video.avi
+S1.png
+S2.png
+sift-detect.py
+sift.py
+test.png
+test.py
