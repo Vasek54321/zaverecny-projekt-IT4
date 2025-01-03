@@ -1,5 +1,5 @@
 import cv2
-import pytesseract
+import easyocr
 import numpy as np
 import time
 
@@ -38,11 +38,12 @@ def calculate_distance(p1, p2):
 
 def detect_license(frame):
     """
-    Detects and extracts the license plate text from a single video frame.
+    Detects and extracts license plate text from a video frame using EasyOCR.
 
     :param frame: A single video frame (numpy array).
     :return: Detected license plate text or None if not detected.
     """
+    reader = easyocr.Reader(['en'])
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blurred, 100, 200)
@@ -56,15 +57,10 @@ def detect_license(frame):
             x, y, w, h = cv2.boundingRect(approx)
             aspect_ratio = w / h
             if 2 < aspect_ratio < 6:
-                license_plate_region = gray[y:y+h, x:x+w]
-                license_plate_region = cv2.adaptiveThreshold(
-                    license_plate_region, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-                )
-                config = "--psm 7"
-                text = pytesseract.image_to_string(license_plate_region, config=config)
-                text = ''.join(filter(str.isalnum, text))
-                if text:
-                    return text
+                license_plate_region = frame[y:y+h, x:x+w]
+                result = reader.readtext(license_plate_region)
+                if result:
+                    return result[0][1]  # Return the recognized text
     return None
 
 while cap.isOpened():
