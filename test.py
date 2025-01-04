@@ -12,6 +12,7 @@ fgbg = cv2.createBackgroundSubtractorMOG2()
 prev_time = 0
 prev_position = None
 speed = 0
+max_speed = 50
 center_x = 0
 center_y = 0
 start_time = None
@@ -27,7 +28,7 @@ with open("soubor.txt", "w") as file:
     file.write("Rychlosti:\n")
 
 # Funkce pro přidání řádku do souboru
-def zapis_radek(text):
+def write_line(text):
     with open("soubor.txt", "a") as file:
         file.write(text)
         file.write("\n")
@@ -102,7 +103,11 @@ while cap.isOpened():
 
             if elapsed_time is not None and elapsed_time > 0:
                 cv2.putText(frame, f'Time: {elapsed_time:.2f} s', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-                zapis_radek(f'Time: {elapsed_time:.2f}')
+                speed = (lines_distance / elapsed_time) * 3.6 
+                if speed < max_speed:
+                    write_line(f'Speed: {speed:.2f}, Time: {elapsed_time:.2f}')
+                else:
+                    write_line(f'Speed: {speed:.2f} km/h, Time: {elapsed_time:.2f} >>> Exceeded speed limit!')
 
  
     # Draw the two red lines

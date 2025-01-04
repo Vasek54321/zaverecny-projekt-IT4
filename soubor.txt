@@ -1,2 +1,2 @@
 Rychlosti:
-Time: 1.59
+Speed: 56.24, Time: 1.60 >>> Exceeded speed limit!
