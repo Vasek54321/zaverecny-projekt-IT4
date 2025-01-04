@@ -1,1 +1,2 @@
 Rychlosti:
+Time: 1.59

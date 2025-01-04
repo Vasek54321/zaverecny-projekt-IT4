@@ -1,5 +1,4 @@
 import cv2
-import easyocr
 import numpy as np
 import time
 
@@ -18,9 +17,10 @@ center_y = 0
 start_time = None
 elapsed_time = None
 
-# Define the positions of the two lines
-line1_y = 200
-line2_y = 800
+# Nastavení pozic čar v pixelech a vzdálenosti mezi nimi v metrech
+line1_y = 460
+line2_y = 860
+lines_distance = 25
 
 # Inicializace souboru (vymaže obsah, pokud soubor již existuje)
 with open("soubor.txt", "w") as file:
@@ -36,13 +36,8 @@ def zapis_radek(text):
 def calculate_distance(p1, p2):
     return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
+"""
 def detect_license(frame):
-    """
-    Detects and extracts license plate text from a video frame using EasyOCR.
-
-    :param frame: A single video frame (numpy array).
-    :return: Detected license plate text or None if not detected.
-    """
     reader = easyocr.Reader(['en'])
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -62,6 +57,7 @@ def detect_license(frame):
                 if result:
                     return result[0][1]  # Return the recognized text
     return None
+    """
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -75,7 +71,7 @@ while cap.isOpened():
     if contours:
         # Find the largest contour
         largest_contour = max(contours, key=cv2.contourArea)
-        if cv2.contourArea(largest_contour) > 500:  # Filter out small contours
+        if cv2.contourArea(largest_contour) > 1000:  # Filter out small contours
             x, y, w, h = cv2.boundingRect(largest_contour)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             center_x = x + w // 2
@@ -108,10 +104,7 @@ while cap.isOpened():
                 cv2.putText(frame, f'Time: {elapsed_time:.2f} s', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
                 zapis_radek(f'Time: {elapsed_time:.2f}')
 
-                license_plate = detect_license(frame)
-                if license_plate:
-                    zapis_radek(f"Detected license plate: {license_plate}")
-
+ 
     # Draw the two red lines
     cv2.line(frame, (0, line1_y), (frame.shape[1], line1_y), (0, 0, 255), 2)
     cv2.line(frame, (0, line2_y), (frame.shape[1], line2_y), (0, 0, 255), 2)
