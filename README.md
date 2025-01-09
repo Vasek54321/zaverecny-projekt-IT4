@@ -22,7 +22,8 @@
 > git clone https://github.com/Vasek54321/zaverecny-projekt-IT4.git
 - Vytvořit virtuální enviroment
 > python -m venv .venv
-> Linux: . .venv/bin/activate
+- Aktivace enviromentu
+> Linux: . .venv/bin/activate   
 > Windows: .venv\Scripts\activate
 - Nainstalovat potřebné moduly
 > pip install opencv-python easyocr 
