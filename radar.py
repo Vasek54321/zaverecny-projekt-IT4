@@ -3,13 +3,13 @@ import easyocr
 import numpy as np
 import time
 
-# Load the video
+# Načtení videa
 cap = cv2.VideoCapture('video.mp4')
 
-# Create background subtractor
+# Detekce pohybu pomocí modelu pozadí MOG2.
 fgbg = cv2.createBackgroundSubtractorMOG2()
 
-# Initialize variables
+# Inicializace proměnných
 prev_time = 0
 prev_position = None
 speed = 0
@@ -31,15 +31,11 @@ with open("rychlosti.txt", "w") as file:
 
 # Funkce pro přidání řádku do souboru
 def write_line(text):
-    with open("soubor.txt", "a") as file:
+    with open("rychlosti.txt", "a") as file:
         file.write(text)
         file.write("\n")
 
-# Function to calculate distance between two points
-def calculate_distance(p1, p2):
-    return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
-
-
+# Funkce pro detekci SPZ
 def detect_license(frame):
     reader = easyocr.Reader(['en'])
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -58,7 +54,7 @@ def detect_license(frame):
                 license_plate_region = frame[y:y+h, x:x+w]
                 result = reader.readtext(license_plate_region)
                 if result:
-                    return result[0][1]  # Return the recognized text
+                    return result[0][1] 
     return None
     
 
@@ -72,9 +68,9 @@ while cap.isOpened():
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     if contours:
-        # Find the largest contour
+        # Funkce na najdení největší kontury
         largest_contour = max(contours, key=cv2.contourArea)
-        if cv2.contourArea(largest_contour) > 1000:  # Filter out small contours
+        if cv2.contourArea(largest_contour) > 1000:  # Odfiltrování šumu
             x, y, w, h = cv2.boundingRect(largest_contour)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             center_x = x + w // 2
@@ -82,39 +78,29 @@ while cap.isOpened():
             current_position = (center_x, center_y)
             current_time = time.time()
 
-            if prev_position is not None:
-                distance = calculate_distance(prev_position, current_position)
-                time_elapsed = current_time - prev_time
-                speed = distance / time_elapsed  # Speed in pixels per second
-
-            prev_position = current_position
-            prev_time = current_time
-
+            # Zaznačení středu detekovaného auta
             cv2.circle(frame, (center_x, center_y), 5, (0, 0, 255), -1)
-            cv2.putText(frame, f'Speed: {speed:.2f} px/s', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-            cv2.putText(frame, f'Center: ({center_x}, {center_y})', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-            # Check if the center point touches the first line
+            # Zjištění jestli se auto dotýká první čáry
             if center_y >= line1_y and start_time is None:
                 start_time = current_time
                 
-
-            # Check if the center point touches the second line
+            # Zjištění jestli se auto dotýká druhé čáry
             if center_y >= line2_y and start_time is not None:
                 elapsed_time = current_time - start_time
-                start_time = None  # Reset start time for the next measurement
+                start_time = None  # Resetování času pro další měření
 
             if elapsed_time is not None and elapsed_time > 0:
-                cv2.putText(frame, f'Time: {elapsed_time:.2f} s', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+                # Výpočet rychlosti
                 speed = (lines_distance / elapsed_time) * 3.6 
                 license_plate = detect_license(frame)
                 if speed < max_speed:
-                    write_line(f'LP: {license_plate} Speed: {speed:.2f}, Time: {elapsed_time:.2f}')
+                    write_line(f'SPZ: {license_plate}, Rychlost: {int(speed)} km/h, Cas: {elapsed_time:.2f}')
                 else:
-                    write_line(f'LP: {license_plate} Speed: {speed:.2f} km/h, Time: {elapsed_time:.2f} >>> Exceeded speed limit!')
+                    write_line(f'SPZ: {license_plate}, Rychlost: {int(speed)} km/h, Cas: {elapsed_time:.2f} >>> Prekrocena povolena rychlost o {int(speed)-max_speed} km/h')
 
  
-    # Draw the two red lines
+    # Vykreslení čar k detekci rychlosti
     cv2.line(frame, (0, line1_y), (frame.shape[1], line1_y), (0, 0, 255), 2)
     cv2.line(frame, (0, line2_y), (frame.shape[1], line2_y), (0, 0, 255), 2)
 
