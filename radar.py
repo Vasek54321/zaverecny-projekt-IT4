@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 # Load the video
-cap = cv2.VideoCapture('Untitled.mp4')
+cap = cv2.VideoCapture('video.mp4')
 
 # Create background subtractor
 fgbg = cv2.createBackgroundSubtractorMOG2()
@@ -26,7 +26,7 @@ line2_y = 860
 lines_distance = 25
 
 # Inicializace souboru (vymaže obsah, pokud soubor již existuje)
-with open("soubor.txt", "w") as file:
+with open("rychlosti.txt", "w") as file:
     file.write("Rychlosti:\n")
 
 # Funkce pro přidání řádku do souboru
