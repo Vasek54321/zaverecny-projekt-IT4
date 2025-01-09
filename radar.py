@@ -1,4 +1,5 @@
 import cv2
+import easyocr
 import numpy as np
 import time
 
@@ -17,6 +18,7 @@ center_x = 0
 center_y = 0
 start_time = None
 elapsed_time = None
+license_plate = None
 
 # Nastavení pozic čar v pixelech a vzdálenosti mezi nimi v metrech
 line1_y = 460
@@ -37,7 +39,7 @@ def write_line(text):
 def calculate_distance(p1, p2):
     return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
-"""
+
 def detect_license(frame):
     reader = easyocr.Reader(['en'])
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -58,7 +60,7 @@ def detect_license(frame):
                 if result:
                     return result[0][1]  # Return the recognized text
     return None
-    """
+    
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -95,6 +97,7 @@ while cap.isOpened():
             # Check if the center point touches the first line
             if center_y >= line1_y and start_time is None:
                 start_time = current_time
+                
 
             # Check if the center point touches the second line
             if center_y >= line2_y and start_time is not None:
@@ -104,10 +107,11 @@ while cap.isOpened():
             if elapsed_time is not None and elapsed_time > 0:
                 cv2.putText(frame, f'Time: {elapsed_time:.2f} s', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
                 speed = (lines_distance / elapsed_time) * 3.6 
+                license_plate = detect_license(frame)
                 if speed < max_speed:
-                    write_line(f'Speed: {speed:.2f}, Time: {elapsed_time:.2f}')
+                    write_line(f'LP: {license_plate} Speed: {speed:.2f}, Time: {elapsed_time:.2f}')
                 else:
-                    write_line(f'Speed: {speed:.2f} km/h, Time: {elapsed_time:.2f} >>> Exceeded speed limit!')
+                    write_line(f'LP: {license_plate} Speed: {speed:.2f} km/h, Time: {elapsed_time:.2f} >>> Exceeded speed limit!')
 
  
     # Draw the two red lines
