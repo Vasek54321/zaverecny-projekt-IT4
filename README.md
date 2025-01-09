@@ -1,6 +1,6 @@
 # Maturitní projekt IT4
 ## Silniční radar
- Radar po kalibraci měří rychlost auta pomocí dvou čar a následně vypočítá rychlost a zapíše ji do souboru. Pokud auto překročí povolenou rychlost, tak je zapsáno do souboru 
+ Radar po kalibraci měří rychlost auta pomocí dvou čar a následně vypočítá rychlost a zapíše ji do souboru. Pokud auto překročí povolenou rychlost, tak je zapsáno do souboru. 
 ## Cíle:
 - Rozpoznat z videa auto
 - Označit a následovat auto na videu
@@ -16,4 +16,13 @@
 ### Použité technologie: 
  OpenCV
  EasyOCR
-
+##
+### Instalace
+- Zkopírovat repositář
+> git clone https://github.com/Vasek54321/zaverecny-projekt-IT4.git
+- Vytvořit virtuální enviroment
+> python -m venv .venv
+- Nainstalovat potřebné moduly
+> pip install opencv-python easyocr 
+- Spustit radar.py
+##

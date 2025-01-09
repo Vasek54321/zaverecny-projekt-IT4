@@ -10,8 +10,6 @@ cap = cv2.VideoCapture('video.mp4')
 fgbg = cv2.createBackgroundSubtractorMOG2()
 
 # Inicializace proměnných
-prev_time = 0
-prev_position = None
 speed = 0
 max_speed = 50
 center_x = 0

@@ -1,2 +1,2 @@
 Rychlosti:
-SPZ: None, Rychlost: 176 km/h, Cas: 0.51 >>> Prekrocena povolena rychlost o 126 km/h
+SPZ: None, Rychlost: 51 km/h, Cas: 1.74 >>> Prekrocena povolena rychlost o 1 km/h
