@@ -1,12 +1,12 @@
 import cv2
-import easyocr
 import numpy as np
 import time
+import easyocr
 
 # Načtení videa
 cap = cv2.VideoCapture('video.mp4')
 
-# Detekce pohybu pomocí modelu pozadí MOG2.
+# Inicializace oddělovače pozadí MOG2.
 fgbg = cv2.createBackgroundSubtractorMOG2()
 
 # Inicializace proměnných
